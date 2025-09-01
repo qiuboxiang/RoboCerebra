@@ -45,7 +45,7 @@ class GenerateConfig:
     # Model‑specific parameters
     # ------------------------------------------------------------------
     model_family: str = "openvla"
-    pretrained_checkpoint: Union[str, Path] | None = "<PRETRAINED_CHECKPOINT_PATH>"  # TODO: Set your model checkpoint path
+    pretrained_checkpoint: Union[str, Path] | None = "/home/featurize/Robo_Data/openvla-oft/homerobo_test_ckpt/openvla-7b+homerobo_dataset+b4+lr-5e-05+lora-r32+dropout-0.0--image_aug--parallel_dec--8_acts_chunk--continuous_acts--L1_regression--3rd_person_img--wrist_img--proprio_state--180000_chkpt"
     
     use_l1_regression: bool = True
     use_diffusion: bool = False
@@ -62,8 +62,8 @@ class GenerateConfig:
     # ------------------------------------------------------------------
     # RoboCerebra environment‑specific parameters
     # ------------------------------------------------------------------
-    robocerebra_root: str = "<ROBOCEREBRA_BENCH_PATH>"  # TODO: Set path to RoboCerebra benchmark data
-    init_files_root: str = "<ROBOCEREBRA_BENCH_PATH>/init_files"  # TODO: Set path to initial state files
+    robocerebra_root: str = "/home/featurize/RoboCerebra/RoboCerebra_Bench"
+    init_files_root: str = "/home/featurize/RoboCerebra/RoboCerebra_Bench/init_files"
     task_suite_name: str = "robocerebra"
     task_types: List[str] = None  # Which task types to evaluate
     num_steps_wait: int = 15

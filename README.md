@@ -28,8 +28,8 @@ Download the RoboCerebra benchmark dataset from Hugging Face:
 # Install Hugging Face Hub if not already installed
 pip install huggingface_hub
 
-# Download the dataset
-huggingface-cli download qiukingballball/RoboCerebraBench --local-dir ./RoboCerebra_Bench
+# Download the dataset (specify dataset type and enable resume)
+huggingface-cli download qiukingballball/RoboCerebraBench --repo-type dataset --local-dir ./RoboCerebra_Bench --resume-download
 ```
 
 ### Option 1: Benchmark-Only Usage (LIBERO)
@@ -74,10 +74,11 @@ pip install packaging ninja
 ninja --version; echo $?  # Verify Ninja --> should return exit code "0"
 pip install "flash-attn==2.5.5" --no-build-isolation
 
-# Install LIBERO from RoboCerebra_Release
-git clone https://github.com/Lifelong-Robot-Learning/LIBERO.git
+# Install LIBERO from RoboCerebra repository
 pip install -e LIBERO
-pip install -r experiments/robot/libero/libero_requirements.txt  # From openvla-oft base dir
+pip install -r experiments/robot/libero/libero_requirements.txt
+pip install "numpy>=1.23.5,<2.0.0"
+pip install "peft>=0.17.0"
 ```
 
 ## Configuration
@@ -122,8 +123,8 @@ python regenerate_robocerebra_dataset.py \
   --robocerebra_raw_data_dir "/path/to/RoboCerebra_Bench/Ideal" \
   --robocerebra_target_dir "./converted_hdf5/robocerebra_ideal"
 
-# Step 2: Convert to RLDS
-cd RoboCerebraDataset && tfds build --overwrite
+# Step 2: Convert to RLDS (disable CUDA to avoid initialization errors)
+cd RoboCerebraDataset && CUDA_VISIBLE_DEVICES="" tfds build --overwrite
 ```
 
 ## Directory Structure
@@ -190,8 +191,8 @@ for task_type in Ideal Random_Disturbance Mix Observation_Mismatching Memory_Exe
     --robocerebra_target_dir "./converted_hdf5/robocerebra_${task_type,,}"
 done
 
-# Convert to RLDS
-cd RoboCerebraDataset && tfds build --overwrite
+# Convert to RLDS (disable CUDA to avoid initialization errors)
+cd RoboCerebraDataset && CUDA_VISIBLE_DEVICES="" tfds build --overwrite
 ```
 
 ## Data Paths

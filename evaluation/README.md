@@ -159,13 +159,14 @@ Ensure the following paths are accessible:
 ### Python Dependencies
 ```bash
 pip install draccus numpy tqdm robosuite h5py imageio wandb
+pip install "numpy>=1.23.5,<2.0.0"
+pip install "peft>=0.17.0"
 ```
 
 ### LIBERO Environment
 ```bash
-# Install LIBERO
-git clone https://github.com/Lifelong-Robot-Learning/LIBERO.git
-cd LIBERO && pip install -e .
+# Install LIBERO from RoboCerebra repository
+pip install -e LIBERO
 ```
 
 ## Module Architecture

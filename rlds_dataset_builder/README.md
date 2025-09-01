@@ -53,6 +53,22 @@ Alternatively, install packages manually:
 pip install tensorflow tensorflow_datasets tensorflow_hub apache_beam matplotlib plotly wandb
 ```
 
+## Download RoboCerebra Dataset
+
+Before conversion, download the RoboCerebra benchmark dataset:
+
+```bash
+# Install Hugging Face Hub if not already installed
+pip install huggingface_hub
+
+# Login with your Hugging Face token (if accessing private repository)
+huggingface-cli login --token YOUR_HF_TOKEN
+
+# Download the dataset (specify dataset type and enable resume for large downloads)
+huggingface-cli download qiukingballball/RoboCerebraBench --repo-type dataset --local-dir ./RoboCerebra_Bench --resume-download
+```
+
+
 ## Step 1: Convert RoboCerebra to HDF5
 
 ### Prerequisites
@@ -69,7 +85,6 @@ python regenerate_robocerebra_dataset.py \
   --robocerebra_target_dir "./converted_hdf5/robocerebra_ideal"
 ```
 
-**Note**: Scene type is now automatically detected from BDDL files. The script will automatically determine whether to use `coffee_table` or `kitchen_table` based on the problem definition in each BDDL file.
 
 ### Parameters
 - `--dataset_name`: Output dataset name
@@ -99,7 +114,7 @@ The `RoboCerebraDataset_dataset_builder.py` handles the RLDS conversion from the
 
 ```bash
 cd RoboCerebraDataset
-tfds build --overwrite
+CUDA_VISIBLE_DEVICES="" tfds build --overwrite
 ```
 
 ### Dataset Features
@@ -148,8 +163,7 @@ pip install -e .
 
 2. **Run with Parallel Processing**:
 ```bash
-export CUDA_VISIBLE_DEVICES=
-tfds build --overwrite --beam_pipeline_options="direct_running_mode=multi_processing,direct_num_workers=10"
+CUDA_VISIBLE_DEVICES="" tfds build --overwrite --beam_pipeline_options="direct_running_mode=multi_processing,direct_num_workers=10"
 ```
 
 ## Dataset Specifications
@@ -249,6 +263,6 @@ for task_type in Ideal Random_Disturbance Mix Observation_Mismatching Memory_Exe
     --scene "coffee_table"
 done
 
-# Convert all HDF5 to RLDS
-cd RoboCerebraDataset && tfds build --overwrite
+# Convert all HDF5 to RLDS (disable CUDA to avoid initialization errors)
+cd RoboCerebraDataset && CUDA_VISIBLE_DEVICES="" tfds build --overwrite
 ```
