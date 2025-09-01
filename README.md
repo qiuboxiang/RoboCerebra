@@ -1,6 +1,9 @@
 # RoboCerebra
 
-A comprehensive robot learning benchmark featuring dynamic environment disturbances and memory-based task evaluation.
+Recent advances in vision-language models (VLMs) have enabled instructionconditioned robotic systems with improved generalization. However, most existing work focuses on reactive System 1 policies, underutilizing VLMs’ strengths
+in semantic reasoning and long-horizon planning. These System 2 capabilities—characterized by deliberative, goal-directed thinking—remain underexplored
+due to the limited temporal scale and structural complexity of current benchmarks.
+To address this gap, we introduce RoboCerebra, a benchmark for evaluating highlevel reasoning in long-horizon robotic manipulation
 
 ## Overview
 
@@ -41,7 +44,7 @@ For running benchmarks using the LIBERO environment:
 conda create -n libero python=3.8.13
 conda activate libero
 
-# Clone and install LIBERO from RoboCerebra_Release
+# Clone and install LIBERO from RoboCerebra
 cd LIBERO
 pip install -r requirements.txt
 pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 torchaudio==0.11.0 --extra-index-url https://download.pytorch.org/whl/cu113
@@ -132,6 +135,7 @@ cd RoboCerebraDataset && CUDA_VISIBLE_DEVICES="" tfds build --overwrite
 ```
 RoboCerebra/
 ├── README.md                          # This overview guide
+├── LIBERO/
 ├── evaluation/                        # Model evaluation suite
 │   ├── README.md                      # Evaluation documentation
 │   ├── eval_openvla.py               # Main evaluation script
@@ -148,90 +152,14 @@ RoboCerebra/
         └── RoboCerebraDataset_dataset_builder.py
 ```
 
-## RoboCerebra Task Types
-
-### Core Task Categories
-
-| Task Type | Description | Dynamic Features |
-|-----------|-------------|------------------|
-| **Ideal** | Baseline performance under optimal conditions | None |
-| **Random_Disturbance** | Random object movements during execution | Dynamic object movement |
-| **Mix** | Combined disturbances and mismatches | All features enabled |
-| **Observation_Mismatching** | Task description doesn't match current scene | Description shifts |
-| **Memory_Execution** | Multi-step tasks requiring memory | Resume mechanisms |
-| **Memory_Exploration** | Exploration-based memory tasks | Resume mechanisms |
-
-### Additional Dependencies
-
-
-#### For RLDS Conversion
-```bash
-pip install tensorflow tensorflow_datasets apache_beam
-```
-
-## Usage Examples
-
-### Evaluate on All Task Types
-```bash
-cd evaluation/
-python eval_openvla.py \
-  --task_types ["Ideal", "Random_Disturbance", "Mix", "Observation_Mismatching", "Memory_Execution", "Memory_Exploration"] \
-  --num_trials_per_task 5
-```
-
-### Convert Complete Dataset
-```bash
-cd rlds_dataset_builder/
-
-# Convert all task types
-for task_type in Ideal Random_Disturbance Mix Observation_Mismatching Memory_Execution Memory_Exploration; do
-  python regenerate_robocerebra_dataset.py \
-    --dataset_name "robocerebra_${task_type,,}" \
-    --robocerebra_raw_data_dir "<ROBOCEREBRA_BENCH_PATH>/$task_type" \
-    --robocerebra_target_dir "./converted_hdf5/robocerebra_${task_type,,}"
-done
-
-# Convert to RLDS (disable CUDA to avoid initialization errors)
-cd RoboCerebraDataset && CUDA_VISIBLE_DEVICES="" tfds build --overwrite
-```
-
-## Data Paths
-
-Default paths (can be configured):
-- **RoboCerebra Benchmark**: `<ROBOCEREBRA_BENCH_PATH>/`
-- **Initial States**: `<ROBOCEREBRA_BENCH_PATH>/init_files/`
-- **Evaluation Logs**: `./evaluation/experiments/logs/`
-- **Videos**: `./evaluation/rollouts/`
-- **RLDS Output**: `~/tensorflow_datasets/robo_cerebra_dataset/`
-
-## Key Features
-
-### Evaluation Suite
-- **Multi-task Benchmark**: 6 distinct task categories
-- **Dynamic Testing**: Real-time environment changes
-- **Memory Assessment**: Multi-step task execution
-- **Video Recording**: Complete episode playbacks
-- **Progress Tracking**: Real-time completion monitoring
-
-### Dataset Builder
-- **Automatic Scene Detection**: Detects scene type from BDDL files
-- **Parallel Processing**: Multi-threaded conversion
-- **RLDS Compatibility**: Standard format for robot learning
-- **Metadata Preservation**: Task types, success labels, episode info
-
-## Getting Help
-
-For detailed usage instructions:
-- **Evaluation**: See `evaluation/README.md`
-- **Dataset Conversion**: See `rlds_dataset_builder/README.md`
-
 ## Citation
 
 If you use RoboCerebra in your research, please cite:
 ```bibtex
-@misc{robocerebra2024,
-  title={RoboCerebra: A Comprehensive Benchmark for Robot Learning with Dynamic Environments},
-  author={Your Author},
-  year={2024}
+@article{han2025robocerebra,
+  title={RoboCerebra: A Large-scale Benchmark for Long-horizon Robotic Manipulation Evaluation},
+  author={Han, Songhao and Qiu, Boxiang and Liao, Yue and Huang, Siyuan and Gao, Chen and Yan, Shuicheng and Liu, Si},
+  journal={arXiv preprint arXiv:2506.06677},
+  year={2025}
 }
 ```
