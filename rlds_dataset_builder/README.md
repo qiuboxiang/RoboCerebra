@@ -4,20 +4,20 @@ Convert RoboCerebra benchmark dataset to RLDS format for training and research.
 
 **Note**: This project is adapted from [rlds_dataset_builder](https://github.com/moojink/rlds_dataset_builder) and modified specifically for RoboCerebra dataset conversion.
 
-## 配置步骤
+## Configuration
 
-**重要**：使用前请先配置以下占位符路径：
+**Important**: Configure the following placeholder paths before use:
 
-1. **在 `regenerate_robocerebra_dataset.py` 中**：
-   - `<LIBERO_ROOT_PATH>` → LIBERO安装目录的绝对路径
+1. **In `regenerate_robocerebra_dataset.py`**:
+   - `<LIBERO_ROOT_PATH>` → Absolute path to LIBERO installation directory
 
-2. **在 `RoboCerebraDataset/RoboCerebraDataset_dataset_builder.py` 中**：
-   - `<CONVERTED_HDF5_PATH>` → 转换后HDF5文件的存储路径
+2. **In `RoboCerebraDataset/RoboCerebraDataset_dataset_builder.py`**:
+   - `<CONVERTED_HDF5_PATH>` → Storage path for converted HDF5 files
 
-3. **在 `environment_macos.yml` 中**（仅macOS用户）：
-   - `<CONDA_ENV_PATH>` → 您的conda环境安装路径
+3. **In `environment_macos.yml`** (macOS users only):
+   - `<CONDA_ENV_PATH>` → Your conda environment installation path
 
-示例配置：
+Example configuration:
 ```python
 # regenerate_robocerebra_dataset.py
 LIBERO_ROOT = Path("/path/to/your/LIBERO")

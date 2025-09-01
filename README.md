@@ -9,24 +9,24 @@ RoboCerebra provides two main components:
 1. **Evaluation Suite** (`evaluation/`) - Model evaluation on RoboCerebra benchmark tasks
 2. **Dataset Builder** (`rlds_dataset_builder/`) - Convert RoboCerebra data to RLDS format for training
 
-## 配置步骤
+## Configuration
 
-**重要**：使用前请先配置以下占位符路径：
+**Important**: Configure the following placeholder paths before use:
 
-1. **编辑 `evaluation/config.py`**：
-   - `<PRETRAINED_CHECKPOINT_PATH>` → 您的预训练模型检查点路径
-   - `<ROBOCEREBRA_BENCH_PATH>` → RoboCerebra基准数据集路径
-   - `<WANDB_ENTITY>` → 您的WandB实体名称（如使用WandB）
-   - `<WANDB_PROJECT>` → 您的WandB项目名称（如使用WandB）
+1. **Edit `evaluation/config.py`**:
+   - `<PRETRAINED_CHECKPOINT_PATH>` → Your pretrained model checkpoint path
+   - `<ROBOCEREBRA_BENCH_PATH>` → RoboCerebra benchmark dataset path
+   - `<WANDB_ENTITY>` → Your WandB entity name (if using WandB)
+   - `<WANDB_PROJECT>` → Your WandB project name (if using WandB)
 
-2. **编辑 `rlds_dataset_builder/environment_macos.yml`**（仅macOS用户）：
-   - `<CONDA_ENV_PATH>` → 您的conda环境路径
+2. **Edit `rlds_dataset_builder/environment_macos.yml`** (macOS users only):
+   - `<CONDA_ENV_PATH>` → Your conda environment path
 
-3. **编辑 `rlds_dataset_builder/regenerate_robocerebra_dataset.py`**：
-   - `<LIBERO_ROOT_PATH>` → LIBERO安装目录路径
+3. **Edit `rlds_dataset_builder/regenerate_robocerebra_dataset.py`**:
+   - `<LIBERO_ROOT_PATH>` → LIBERO installation directory path
 
-4. **编辑 `rlds_dataset_builder/RoboCerebraDataset/RoboCerebraDataset_dataset_builder.py`**：
-   - `<CONVERTED_HDF5_PATH>` → 转换后的HDF5文件路径
+4. **Edit `rlds_dataset_builder/RoboCerebraDataset/RoboCerebraDataset_dataset_builder.py`**:
+   - `<CONVERTED_HDF5_PATH>` → Converted HDF5 files path
 
 ## Quick Start
 

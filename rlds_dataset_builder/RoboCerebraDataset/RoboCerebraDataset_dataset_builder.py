@@ -1,8 +1,8 @@
 import os
-# 跳过 GCE 元数据服务器检查，避免 TFDS 在没有凭证时长时间等待
+# Skip GCE metadata server check to avoid TFDS long waiting when no credentials
 os.environ['NO_GCE_CHECK'] = 'true'
 
-# 禁用 TFDS 从 GCS 初始化 DatasetInfo 的全局行为
+# Disable TFDS global behavior of initializing DatasetInfo from GCS
 try:
     from tensorflow_datasets.core.utils import gcs_utils
     gcs_utils._is_gcs_disabled = True
@@ -20,7 +20,7 @@ from RoboCerebraDataset.conversion_utils import MultiThreadedDatasetBuilder
 
 def _generate_examples(paths) -> Iterator[Tuple[str, Any]]:
     """Yields episodes for list of data paths."""
-    # 每个 worker 各自创建模型，避免死锁
+    # Each worker creates its own model to avoid deadlock
     def _parse_example(episode_path, demo_id):
         with h5py.File(episode_path, "r") as F:
             if f"demo_{demo_id}" not in F['data'].keys():
@@ -33,18 +33,18 @@ def _generate_examples(paths) -> Iterator[Tuple[str, Any]]:
             wrist_images = F['data'][f"demo_{demo_id}"]["obs"]["eye_in_hand_rgb"][()]
 
         raw_file_string = os.path.basename(episode_path)
-        # 去掉后缀，比如 ".h5"
+        # Remove suffix, e.g., ".h5"
         name = raw_file_string[:-5]
-        # 2. 按 "_" 分割成列表
+        # 2. Split by "_" into list
         parts = name.split("_")
-        # 3. 最后两段永远是 [variant, "tex0"]，截掉它们
+        # 3. The last two segments are always [variant, "tex0"], remove them
         instr_words = parts[:-3]
 
-        # 4. 如果最后一个 instr word 以 "." 结尾，就去掉它
+        # 4. If the last instr word ends with ".", remove it
         if instr_words and instr_words[-1].endswith('.'):
             instr_words[-1] = instr_words[-1][:-1]
 
-        # 4. 合成指令
+        # 4. Compose instruction
         instruction = " ".join(instr_words)
         print('instruction:', instruction)
 
