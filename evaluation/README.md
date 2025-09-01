@@ -2,12 +2,26 @@
 
 Evaluation tool for OpenVLA-OFT model on RoboCerebra benchmark, designed with modular architecture.
 
+## Setup
+
+### Dataset Download
+
+First, download the RoboCerebra benchmark dataset from Hugging Face:
+
+```bash
+# Install Hugging Face Hub if not already installed
+pip install huggingface_hub
+
+# Download the dataset
+huggingface-cli download qiukingballball/RoboCerebraBench --local-dir ./RoboCerebra_Bench
+```
+
 ## Configuration
 
 **Important**: Before running evaluation, configure the following placeholders in `config.py`:
 
 - `<PRETRAINED_CHECKPOINT_PATH>` → Your OpenVLA-OFT model checkpoint path
-- `<ROBOCEREBRA_BENCH_PATH>` → RoboCerebra benchmark dataset root directory
+- `<ROBOCEREBRA_BENCH_PATH>` → RoboCerebra benchmark dataset root directory (e.g., `./RoboCerebra_Bench`)
 - `<WANDB_ENTITY>` → Your WandB entity name (if using WandB logging)
 - `<WANDB_PROJECT>` → Your WandB project name (if using WandB logging)
 

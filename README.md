@@ -9,6 +9,77 @@ RoboCerebra provides two main components:
 1. **Evaluation Suite** (`evaluation/`) - Model evaluation on RoboCerebra benchmark tasks
 2. **Dataset Builder** (`rlds_dataset_builder/`) - Convert RoboCerebra data to RLDS format for training
 
+## Installation
+
+### Initial Setup
+
+First, clone the RoboCerebra repository:
+
+```bash
+git clone https://github.com/qiuboxiang/RoboCerebra/tree/main
+cd RoboCerebra
+```
+
+### Dataset Download
+
+Download the RoboCerebra benchmark dataset from Hugging Face:
+
+```bash
+# Install Hugging Face Hub if not already installed
+pip install huggingface_hub
+
+# Download the dataset
+huggingface-cli download qiukingballball/RoboCerebraBench --local-dir ./RoboCerebra_Bench
+```
+
+### Option 1: Benchmark-Only Usage (LIBERO)
+
+For running benchmarks using the LIBERO environment:
+
+```bash
+# Create and activate conda environment
+conda create -n libero python=3.8.13
+conda activate libero
+
+# Clone and install LIBERO from RoboCerebra_Release
+cd LIBERO
+pip install -r requirements.txt
+pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 torchaudio==0.11.0 --extra-index-url https://download.pytorch.org/whl/cu113
+
+# Install the libero package
+pip install -e .
+```
+
+### Option 2: OpenVLA Evaluation
+
+For evaluation using OpenVLA:
+
+```bash
+# Create and activate conda environment
+conda create -n openvla-oft python=3.10 -y
+conda activate openvla-oft
+
+# Install PyTorch
+# Use a command specific to your machine: https://pytorch.org/get-started/locally/
+pip3 install torch torchvision torchaudio
+
+# Clone openvla-oft repo and pip install to download dependencies
+git clone https://github.com/moojink/openvla-oft.git
+cd openvla-oft
+pip install -e .
+
+# Install Flash Attention 2 for training (https://github.com/Dao-AILab/flash-attention)
+#   =>> If you run into difficulty, try `pip cache remove flash_attn` first
+pip install packaging ninja
+ninja --version; echo $?  # Verify Ninja --> should return exit code "0"
+pip install "flash-attn==2.5.5" --no-build-isolation
+
+# Install LIBERO from RoboCerebra_Release
+git clone https://github.com/Lifelong-Robot-Learning/LIBERO.git
+pip install -e LIBERO
+pip install -r experiments/robot/libero/libero_requirements.txt  # From openvla-oft base dir
+```
+
 ## Configuration
 
 **Important**: Configure the following placeholder paths before use:
@@ -89,27 +160,10 @@ RoboCerebra/
 | **Memory_Execution** | Multi-step tasks requiring memory | Resume mechanisms |
 | **Memory_Exploration** | Exploration-based memory tasks | Resume mechanisms |
 
-### Dynamic Features
+### Additional Dependencies
 
-- **Dynamic Object Movement**: Objects randomly move during task execution
-- **Observation Mismatching**: Task descriptions change mid-execution
-- **Resume Mechanisms**: Models can recover from intermediate states
-- **Progress Tracking**: Real-time completion monitoring
 
-## Dependencies
-
-### Core Requirements
-```bash
-pip install draccus numpy tqdm robosuite h5py imageio wandb
-```
-
-### LIBERO Environment
-```bash
-git clone https://github.com/Lifelong-Robot-Learning/LIBERO.git
-cd LIBERO && pip install -e .
-```
-
-### For RLDS Conversion
+#### For RLDS Conversion
 ```bash
 pip install tensorflow tensorflow_datasets apache_beam
 ```
