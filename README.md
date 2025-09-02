@@ -1,11 +1,17 @@
 # RoboCerebra
 
+[![arXiv](https://img.shields.io/badge/arXiv-2506.06677-red)](https://www.arxiv.org/pdf/2506.06677) [![Dataset](https://img.shields.io/badge/🤗%20Hugging%20Face-Dataset-yellow)](https://huggingface.co/datasets/qiukingballball/RoboCerebraBench)
+
 Recent advances in vision-language models (VLMs) have enabled instructionconditioned robotic systems with improved generalization. However, most existing work focuses on reactive System 1 policies, underutilizing VLMs’ strengths
 in semantic reasoning and long-horizon planning. These System 2 capabilities—characterized by deliberative, goal-directed thinking—remain underexplored
 due to the limited temporal scale and structural complexity of current benchmarks.
 To address this gap, we introduce RoboCerebra, a benchmark for evaluating highlevel reasoning in long-horizon robotic manipulation
 
 ## Overview
+
+<p align="center">
+<img src="https://github.com/qiuboxiang/RoboCerebra/blob/main/assets/overview.png?raw=true" alt="RoboCerebra Overview" width="100%">
+</p>
 
 RoboCerebra provides two main components:
 
