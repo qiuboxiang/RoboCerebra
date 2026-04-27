@@ -1,136 +1,80 @@
-# RoboCerebra OpenVLA Evaluation Suite
+# RoboCerebra Evaluation
 
-Evaluation tool for OpenVLA-OFT model on RoboCerebra benchmark, designed with modular architecture.
+`evaluation/` contains the OpenVLA-based evaluation entrypoint for the
+RoboCerebra benchmark.
 
-## Setup
+## Prerequisites
 
-### Dataset Download
+Before running the evaluation code, make sure:
 
-First, download the RoboCerebra benchmark dataset from Hugging Face:
+- OpenVLA-OFT and its dependencies are installed
+- `LIBERO/` from this repository is installed with `pip install -e LIBERO`
+- the RoboCerebra benchmark data has been downloaded locally
 
-```bash
-# Install Hugging Face Hub if not already installed
-pip install huggingface_hub
-
-# Download the dataset
-huggingface-cli download qiukingballball/RoboCerebraBench --local-dir ./RoboCerebra_Bench
-```
+The repository-level setup is documented in
+[../README.md](/Users/qiuboxiang/RoboCerebra/README.md).
 
 ## Configuration
 
-**Important**: Before running evaluation, configure the following placeholders in `config.py`:
+The default configuration is defined in
+[config.py](/Users/qiuboxiang/RoboCerebra/evaluation/config.py).
 
-- `<PRETRAINED_CHECKPOINT_PATH>` → Your OpenVLA-OFT model checkpoint path
-- `<ROBOCEREBRA_BENCH_PATH>` → RoboCerebra benchmark dataset root directory (e.g., `./RoboCerebra_Bench`)
+Recommended environment variables:
 
-Example:
-```python
-pretrained_checkpoint = "/path/to/your/openvla-checkpoint"
-robocerebra_root = "/path/to/RoboCerebra_Bench"
+```bash
+export ROBOCEREBRA_PRETRAINED_CHECKPOINT=/path/to/openvla/checkpoint
+export ROBOCEREBRA_BENCH_ROOT=/path/to/RoboCerebra_Bench
 ```
 
-## File Structure
+Optional variables:
 
+```bash
+export ROBOCEREBRA_INIT_FILES_ROOT=/path/to/RoboCerebra_Bench/init_files
+export WANDB_ENTITY=your_wandb_entity
+export WANDB_PROJECT=your_wandb_project
 ```
-evaluation/
-├── eval_openvla.py           # OpenVLA evaluation main entry (396 lines)
-├── config.py                 # Configuration management (87 lines)
-├── utils.py                  # Data processing tools (422 lines)
-├── robocerebra_logging.py    # Logging and results saving (141 lines)
-├── task_runner.py            # Task-level management (200 lines)
-├── episode.py                # Episode execution logic (280 lines)
-├── resume.py                 # Resume mechanism (69 lines)
-└── README.md                 # Usage instructions
-```
+
+You can override any of these at runtime with CLI flags such as
+`--pretrained_checkpoint` and `--robocerebra_root`.
 
 ## Quick Start
 
-### Basic Usage
+Run from this directory:
 
 ```bash
-# Navigate to evaluation directory
-cd <ROBOCEREBRA_PATH>/evaluation
-
-# Run with default configuration (evaluate all task types)
-python eval_openvla.py
-
-# Specify GPU and task types
-CUDA_VISIBLE_DEVICES=0 python eval_openvla.py --task_types ["Ideal", "Random_Disturbance"]
+cd /path/to/RoboCerebra/evaluation
+python eval_openvla.py \
+  --task_types '["Ideal", "Random_Disturbance"]' \
+  --num_trials_per_task 1
 ```
 
-### Common Configurations
+Single-task examples:
 
 ```bash
-# Random_Disturbance task evaluation
-python eval_openvla.py \
-  --task_types ["Random_Disturbance"] \
-  --num_trials_per_task 5
-
-# Mix task evaluation 
-python eval_openvla.py \
-  --task_types ["Mix"] \
-  --num_trials_per_task 3
-
-# Specify OpenVLA-OFT model checkpoint
-python eval_openvla.py \
-  --pretrained_checkpoint "/path/to/openvla-oft/checkpoint" \
-  --task_types ["Ideal"]
-
-# Use specific task description suffix
-python eval_openvla.py \
-  --task_types ["Random_Disturbance"] \
+python eval_openvla.py --task_types '["Random_Disturbance"]'
+python eval_openvla.py --task_types '["Mix"]' --num_trials_per_task 3
 ```
 
-## Configuration Parameters
+Explicit path overrides:
 
-### Task Configuration
-- `--task_types`: List of task types to evaluate
-- `--robocerebra_root`: RoboCerebra dataset root directory (default: `<ROBOCEREBRA_BENCH_PATH>`)
-- `--init_files_root`: Initial state files directory (default: `<ROBOCEREBRA_BENCH_PATH>/init_files`)
-- `--num_trials_per_task`: Number of trials per task (default: 5)
-
-### OpenVLA-OFT Model Configuration
-- `--pretrained_checkpoint`: OpenVLA-OFT model checkpoint path
-- `--model_family`: Model type (fixed: "openvla")
-- `--use_l1_regression`: Use L1 regression head (default: True)
-- `--use_proprio`: Whether to use proprioceptive information (default: True)
-- `--center_crop`: Image center cropping (default: True)
-- `--num_open_loop_steps`: Open-loop execution steps (default: 8)
-
-### Dynamic Features Configuration
-- `--dynamic`: Enable dynamic disturbance object movement
-- `--dynamic_shift_description`: Enable observation mismatching mode
-- `--resume`: Enable task resume mechanism
-
-### Logging Configuration
-- `--local_log_dir`: Local log directory (default: "./experiments/logs")
-- `--use_wandb`: Enable Weights & Biases logging (default: False)
-- `--wandb_entity`: WandB entity name
-- `--wandb_project`: WandB project name
-- `--run_id_note`: Run ID notes
-
-## Output Files
-
-### Log Files
-- `./experiments/logs/EVAL-robocerebra-openvla-{timestamp}.txt`: Detailed execution logs
-- `./experiments/logs/EVAL-robocerebra-openvla-{timestamp}_results.json`: JSON format results
-
-### Video Files
-```
-rollouts/{timestamp}/{task_type}/{case_name}/
-├── {timestamp}--{task_type}--episode={idx}--success={0|1}--task={description}.mp4
-└── {timestamp}--{task_type}--episode={idx}--success={0|1}--task={description}.json
+```bash
+python eval_openvla.py \
+  --pretrained_checkpoint /path/to/openvla/checkpoint \
+  --robocerebra_root /path/to/RoboCerebra_Bench
 ```
 
-## Module Architecture
+## Important Arguments
 
-### Core Modules
-- **eval_openvla.py**: OpenVLA-OFT model evaluation main logic
-- **config.py**: Evaluation parameter configuration and validation
-- **utils.py**: Data loading and environment processing tools
+- `--task_types`: task categories to evaluate
+- `--robocerebra_root`: root directory of the downloaded benchmark
+- `--init_files_root`: directory containing the benchmark init files
+- `--num_trials_per_task`: number of rollouts per task instance
+- `--use_wandb`: enable Weights & Biases logging
+- `--local_log_dir`: local directory for text logs and JSON results
 
-### Functional Modules  
-- **robocerebra_logging.py**: Logging setup and results saving
-- **task_runner.py**: Task-level management and validation
-- **episode.py**: Single episode execution and dynamic disturbance features
-- **resume.py**: Intelligent resume mechanism handling
+## Outputs
+
+If you run from `evaluation/`, outputs are written to:
+
+- `experiments/logs/`: run logs and JSON summaries
+- `rollouts/`: rollout videos and per-episode metadata

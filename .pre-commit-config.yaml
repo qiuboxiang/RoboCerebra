@@ -1,0 +1,33 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+        exclude: ^(LIBERO/|rlds_dataset_builder/)
+      - id: trailing-whitespace
+        exclude: ^(LIBERO/|rlds_dataset_builder/)
+      - id: check-added-large-files
+        args: ["--maxkb=10240"]
+        exclude: ^(LIBERO/|rlds_dataset_builder/)
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        files: ^evaluation/(config|task_runner)\.py$
+        args: ["--profile", "black", "--line-length", "79"]
+
+  - repo: https://github.com/google/yapf
+    rev: v0.40.2
+    hooks:
+      - id: yapf
+        files: ^evaluation/(config|task_runner)\.py$
+        args: ["--style=.style.yapf", "--in-place"]
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.1.1
+    hooks:
+      - id: flake8
+        files: ^evaluation/(config|task_runner)\.py$
+        args: ["--config=.flake8"]

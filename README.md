@@ -1,166 +1,183 @@
-# RoboCerebra
+<div align="center">
 
-[![NeurIPS 2025](https://img.shields.io/badge/arXiv-2506.06677-red)](https://www.arxiv.org/pdf/2506.06677) [![Dataset](https://img.shields.io/badge/🤗%20Hugging%20Face-Dataset-yellow)](https://huggingface.co/datasets/qiukingballball/RoboCerebraBench)
+<h1>RoboCerebra</h1>
 
-Recent advances in vision-language models (VLMs) have enabled instructionconditioned robotic systems with improved generalization. However, most existing work focuses on reactive System 1 policies, underutilizing VLMs’ strengths
-in semantic reasoning and long-horizon planning. These System 2 capabilities—characterized by deliberative, goal-directed thinking—remain underexplored
-due to the limited temporal scale and structural complexity of current benchmarks.
-To address this gap, we introduce RoboCerebra, a benchmark for evaluating highlevel reasoning in long-horizon robotic manipulation
+<div>
+    Songhao Han&emsp;
+    Boxiang Qiu&emsp;
+    Yue Liao&emsp;
+    Siyuan Huang&emsp;
+    Chen Gao&emsp;
+    Shuicheng Yan&emsp;
+    Si Liu
+</div>
 
-## Overview
+<div>
+    <strong>NeurIPS 2025</strong>
+</div>
 
-<p align="center">
-<img src="https://github.com/qiuboxiang/RoboCerebra/blob/main/assets/overview.png?raw=true" alt="RoboCerebra Overview" width="100%">
-</p>
+<div>
+    <h4 align="center">
+        <a href="https://www.arxiv.org/pdf/2506.06677" target="_blank">
+        <img src="https://img.shields.io/badge/arXiv-2506.06677-b31b1b.svg">
+        </a>
+        <a href="https://robocerebra.github.io/" target="_blank">
+        <img src="https://img.shields.io/badge/Project-Page-green">
+        </a>
+        <a href="https://huggingface.co/datasets/qiukingballball/RoboCerebraBench" target="_blank">
+        <img src="https://img.shields.io/badge/Dataset-Hugging%20Face-yellow">
+        </a>
+        <a href="#citation">
+        <img src="https://img.shields.io/badge/Cite-BibTeX-blue">
+        </a>
+    </h4>
+</div>
 
-RoboCerebra provides two main components:
+<strong>
+RoboCerebra is a benchmark for evaluating long-horizon robotic
+manipulation with an emphasis on high-level reasoning.
+</strong>
 
-1. **Evaluation Suite** (`evaluation/`) - Model evaluation on RoboCerebra benchmark tasks
-2. **Dataset Builder** (`rlds_dataset_builder/`) - Convert RoboCerebra data to RLDS format for training
+<div>
+    Project Page: <a href="https://robocerebra.github.io/" target="_blank">https://robocerebra.github.io/</a>
+</div>
 
-## Installation
+<div style="text-align:center">
+<img src="assets/overview.png" width="100%" height="100%">
+</div>
 
-### Initial Setup
+---
 
-First, clone the RoboCerebra repository:
+</div>
+
+## News
+
+- **[2026-04-27]** The repository has been cleaned up around the main
+  `evaluation/` pipeline and now passes the configured `pre-commit`
+  checks.
+- **[2025-11-10]** Initial public repository structure, evaluation code,
+  and benchmark-related assets were published.
+
+## Highlights
+
+- **Long-horizon reasoning benchmark.** RoboCerebra focuses on robotic
+  manipulation tasks that require multi-step planning and semantic
+  reasoning rather than purely reactive control.
+- **OpenVLA evaluation pipeline.** The repository includes an evaluation
+  stack centered on OpenVLA-style policy execution under `evaluation/`.
+- **Benchmark-oriented workflow.** The codebase is organized around
+  dataset preparation, task execution, rollout recording, and result
+  aggregation for reproducible benchmarking.
+
+## Usage
+
+### Repository Layout
+
+- `evaluation/`: main evaluation entrypoint and task execution utilities
+- `LIBERO/`: bundled environment dependency used by the evaluation stack
+- `rlds_dataset_builder/`: dataset conversion utilities kept in the
+  repository but not covered by the current cleanup
+- `assets/`: figures used by the documentation
+
+### Installation
+
+Clone the repository:
 
 ```bash
-git clone https://github.com/qiuboxiang/RoboCerebra/tree/main
+git clone https://github.com/qiuboxiang/RoboCerebra.git
 cd RoboCerebra
 ```
 
-### Dataset Download
-
-Download the RoboCerebra benchmark dataset from Hugging Face:
-
-```bash
-# Install Hugging Face Hub if not already installed
-pip install huggingface_hub
-
-# Download the dataset (specify dataset type and enable resume)
-huggingface-cli download qiukingballball/RoboCerebraBench --repo-type dataset --local-dir ./RoboCerebra_Bench --resume-download
-```
-
-### Option 1: Benchmark-Only Usage (LIBERO)
-
-For running benchmarks using the LIBERO environment:
+The evaluation code expects an OpenVLA-OFT environment plus the local
+`LIBERO/` package from this repository.
 
 ```bash
-# Create and activate conda environment
-conda create -n libero python=3.8.13
-conda activate libero
-
-# Clone and install LIBERO from RoboCerebra
-cd LIBERO
-pip install -r requirements.txt
-pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 torchaudio==0.11.0 --extra-index-url https://download.pytorch.org/whl/cu113
-
-# Install the libero package
-pip install -e .
-```
-
-### Option 2: OpenVLA Evaluation
-
-For evaluation using OpenVLA:
-
-```bash
-# Create and activate conda environment
 conda create -n openvla-oft python=3.10 -y
 conda activate openvla-oft
 
-# Install PyTorch
-# Use a command specific to your machine: https://pytorch.org/get-started/locally/
-pip3 install torch torchvision torchaudio
+pip install torch torchvision torchaudio
 
-# Clone openvla-oft repo and pip install to download dependencies
 git clone https://github.com/moojink/openvla-oft.git
 cd openvla-oft
 pip install -e .
 
-# Install Flash Attention 2 for training (https://github.com/Dao-AILab/flash-attention)
-#   =>> If you run into difficulty, try `pip cache remove flash_attn` first
 pip install packaging ninja
-ninja --version; echo $?  # Verify Ninja --> should return exit code "0"
+ninja --version
 pip install "flash-attn==2.5.5" --no-build-isolation
 
-# Install LIBERO from RoboCerebra repository
+cd /path/to/RoboCerebra
 pip install -e LIBERO
-pip install -r experiments/robot/libero/libero_requirements.txt
+pip install -r openvla-oft/experiments/robot/libero/libero_requirements.txt
 pip install "numpy>=1.23.5,<2.0.0"
 pip install "peft>=0.17.0"
 ```
 
-## Configuration
+For evaluation-specific notes, see
+[evaluation/README.md](/Users/qiuboxiang/RoboCerebra/evaluation/README.md).
 
-**Important**: Configure the following placeholder paths before use:
+### Data Preparation
 
-1. **Edit `evaluation/config.py`**:
-   - `<PRETRAINED_CHECKPOINT_PATH>` → Your pretrained model checkpoint path
-   - `<ROBOCEREBRA_BENCH_PATH>` → RoboCerebra benchmark dataset path
-   - `<WANDB_ENTITY>` → Your WandB entity name (if using WandB)
-   - `<WANDB_PROJECT>` → Your WandB project name (if using WandB)
-
-2. **Edit `rlds_dataset_builder/environment_macos.yml`** (macOS users only):
-   - `<CONDA_ENV_PATH>` → Your conda environment path
-
-3. **Edit `rlds_dataset_builder/regenerate_robocerebra_dataset.py`**:
-   - `<LIBERO_ROOT_PATH>` → LIBERO installation directory path
-
-4. **Edit `rlds_dataset_builder/RoboCerebraDataset/RoboCerebraDataset_dataset_builder.py`**:
-   - `<CONVERTED_HDF5_PATH>` → Converted HDF5 files path
-
-## Quick Start
-
-### Model Evaluation
-
-Evaluate OpenVLA-OFT on RoboCerebra benchmark:
+Download the RoboCerebra benchmark from Hugging Face:
 
 ```bash
-cd evaluation/
-python eval_openvla.py --task_types ["Ideal", "Random_Disturbance"]
+pip install huggingface_hub
+huggingface-cli download \
+  qiukingballball/RoboCerebraBench \
+  --repo-type dataset \
+  --local-dir ./RoboCerebra_Bench \
+  --resume-download
 ```
 
-### Dataset Conversion
+### Model Preparation
 
-Convert RoboCerebra data to RLDS format for training:
+The evaluation entrypoint reads its default paths from environment
+variables instead of hard-coded local machine paths:
 
 ```bash
-cd rlds_dataset_builder/
-
-# Step 1: Convert to HDF5
-python regenerate_robocerebra_dataset.py \
-  --robocerebra_raw_data_dir "/path/to/RoboCerebra_Bench/Ideal" \
-  --robocerebra_target_dir "./converted_hdf5/robocerebra_ideal"
-
-# Step 2: Convert to RLDS (disable CUDA to avoid initialization errors)
-cd RoboCerebraDataset && CUDA_VISIBLE_DEVICES="" tfds build --overwrite
+export ROBOCEREBRA_PRETRAINED_CHECKPOINT=/path/to/openvla/checkpoint
+export ROBOCEREBRA_BENCH_ROOT=/path/to/RoboCerebra_Bench
 ```
 
-## Directory Structure
+Optional variables:
 
+```bash
+export ROBOCEREBRA_INIT_FILES_ROOT=/path/to/RoboCerebra_Bench/init_files
+export WANDB_ENTITY=your_wandb_entity
+export WANDB_PROJECT=your_wandb_project
 ```
-RoboCerebra/
-├── README.md                          # This overview guide
-├── LIBERO/
-├── evaluation/                        # Model evaluation suite
-│   ├── README.md                      # Evaluation documentation
-│   ├── eval_openvla.py               # Main evaluation script
-│   ├── config.py                     # Configuration management
-│   ├── robocerebra_logging.py        # Logging and results
-│   ├── task_runner.py                # Task-level execution
-│   ├── episode.py                    # Episode-level execution
-│   ├── resume.py                     # Resume mechanism
-│   └── utils.py                      # Utility functions
-└── rlds_dataset_builder/             # Dataset conversion tools
-    ├── README.md                     # Conversion documentation
-    ├── regenerate_robocerebra_dataset.py  # HDF5 conversion
-    └── RoboCerebraDataset/           # RLDS builder
-        └── RoboCerebraDataset_dataset_builder.py
+
+### Evaluation
+
+Run evaluation from the `evaluation/` directory so logs and rollout
+videos are written there:
+
+```bash
+cd evaluation
+python eval_openvla.py \
+  --task_types '["Ideal", "Random_Disturbance"]' \
+  --num_trials_per_task 1
 ```
+
+Common overrides:
+
+```bash
+python eval_openvla.py \
+  --pretrained_checkpoint /path/to/openvla/checkpoint \
+  --robocerebra_root /path/to/RoboCerebra_Bench \
+  --task_types '["Mix"]'
+```
+
+### Outputs
+
+When launched from `evaluation/`, the run artifacts are written to:
+
+- `experiments/logs/`: text logs and JSON summaries
+- `rollouts/`: per-episode videos and metadata
 
 ## Citation
 
-If you use RoboCerebra in your research, please cite:
+If you find this work useful, please consider citing our paper:
+
 ```bibtex
 @article{han2025robocerebra,
   title={RoboCerebra: A Large-scale Benchmark for Long-horizon Robotic Manipulation Evaluation},
@@ -169,3 +186,15 @@ If you use RoboCerebra in your research, please cite:
   year={2025}
 }
 ```
+
+## License
+
+This project is licensed under the Apache-2.0 License. See
+[LICENSE](/Users/qiuboxiang/RoboCerebra/LICENSE) for more information.
+
+## Acknowledgement
+
+- [OpenVLA-OFT](https://github.com/moojink/openvla-oft) for the model
+  evaluation stack this repository builds around.
+- `LIBERO/` and related robot environment tooling used by the benchmark
+  evaluation pipeline.

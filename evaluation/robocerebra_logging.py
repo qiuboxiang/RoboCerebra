@@ -47,14 +47,14 @@ def log_message(msg: str, log_file=None):
         log_file.flush()
 
 
-def save_results_log(results_log_filepath: str, cfg: GenerateConfig, results_by_task_type: Dict, 
-                     total_eps: int, total_success: int, total_agent_subtasks: int, 
+def save_results_log(results_log_filepath: str, cfg: GenerateConfig, results_by_task_type: Dict,
+                     total_eps: int, total_success: int, total_agent_subtasks: int,
                      total_possible_subtasks: int, run_id: str, task_results: List[Dict] = None):
     """Save detailed evaluation results to a JSON file."""
-    
+
     overall_success_rate = total_success / total_eps if total_eps > 0 else 0
     overall_subtask_rate = total_agent_subtasks / total_possible_subtasks if total_possible_subtasks > 0 else 0
-    
+
     results_data = {
         "evaluation_info": {
             "run_id": run_id,
@@ -92,7 +92,7 @@ def save_results_log(results_log_filepath: str, cfg: GenerateConfig, results_by_
         "results_by_task_type": results_by_task_type,
         "detailed_task_results": task_results or []
     }
-    
+
     try:
         with open(results_log_filepath, 'w', encoding='utf-8') as f:
             json.dump(results_data, f, indent=2, ensure_ascii=False)
@@ -122,15 +122,15 @@ def save_rollout_video(
         rollout_dir = BASE_DIR / clean_task_name
     else:
         rollout_dir = BASE_DIR
-    
+
     os.makedirs(rollout_dir, exist_ok=True)
     processed_task_description = task_description.lower().replace(" ", "_").replace("\n", "_").replace(".", "_")[:50]
-    
+
     # Include task suite in video filename
     suite_prefix = f"{task_suite.replace(' ', '_')}--" if task_suite else ""
     video_name = f"{DATE_TIME}--{suite_prefix}episode={idx}--success={int(success)}--task={processed_task_description}.mp4"
     mp4_path = rollout_dir / video_name
-    
+
     video_writer = imageio.get_writer(mp4_path, fps=30)
     for img in rollout_images:
         video_writer.append_data(img)
