@@ -190,7 +190,7 @@ If you find this work useful, please consider citing our paper:
 ## License
 
 This project is licensed under the Apache-2.0 License. See
-[LICENSE](/Users/qiuboxiang/RoboCerebra/LICENSE) for more information.
+[LICENSE](LICENSE) for more information.
 
 ## Acknowledgement
 
