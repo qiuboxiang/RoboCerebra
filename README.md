@@ -1,6 +1,6 @@
 <div align="center">
 
-<h1>RoboCerebra</h1>
+<h1>RoboCerebra: A Large-scale Benchmark for Long-horizon Robotic Manipulation Evaluation</h1>
 
 <div>
     Songhao Han&emsp;
